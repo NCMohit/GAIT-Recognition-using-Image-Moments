@@ -50,7 +50,7 @@ for sample in test_data:
 	for data in moments[1:]:
 		neighbours[str(data)] = euc_dist(data[1:],sample[1:])
 	sorted_neighbours = {k: v for k, v in sorted(neighbours.items(), key=lambda item: item[1])}
-	print(list(sorted_neighbours.keys())[0],list(sorted_neighbours.values())[0])
+	print("Nearest neighbour distance",list(sorted_neighbours.values())[0])
 	print("Actual person: ",sample[0])
 	temp = list(sorted_neighbours.keys())[0]
 	temp = temp.replace("[","")

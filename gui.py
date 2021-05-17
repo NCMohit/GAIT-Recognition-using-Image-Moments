@@ -38,15 +38,14 @@ def train():
 		blur = cv2.GaussianBlur(image,(5,5),0)
 		ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 		th3 = cv2.bitwise_not(th3)
+		moment_range = 0
+				
+		row = str(dirname_name)
+		for p in range(0,moment_range+1):
+			for q in range(0,moment_range+1):
+				row += "," + str(Moment_pq(p,q,th3))
 
-		try:				
-			row = str(dirname_name)
-			for p in range(0,3):
-				for q in range(0,3):
-					row += "," + str(Moment_pq(p,q,th3))
-		except:
-			continue 
-		model = open("moments_data.csv","a")
+		model = open("moments_data_0.csv","a")
 		model.write(row+"\n")
 		print(row)
 		model.close()
@@ -68,7 +67,7 @@ def predict():
 	success = True
 
 	moments = []
-	model = open("moments_data.csv","r")
+	model = open("moments_data_0.csv","r")
 	for row in model.readlines():
 		row = row.replace("\n","")
 		moments.append(row.split(","))
@@ -79,27 +78,24 @@ def predict():
 
 	iterations_timeline = []
 	accuracy_timeline = []
-
+	moment_range = 0
 	while success:
 		success,image = vidcap.read()
 		image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)	
 		blur = cv2.GaussianBlur(image,(5,5),0)
 		ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 		th3 = cv2.bitwise_not(th3)
-		
-		try:				
-			sample = [dirname_name]
-			for p in range(0,3):
-				for q in range(0,3):
-					sample.append(str(Moment_pq(p,q,th3)))
-		except:
-			continue 
+						
+		sample = [dirname_name]
+		for p in range(0,moment_range+1):
+			for q in range(0,moment_range+1):
+				sample.append(str(Moment_pq(p,q,th3))) 
 
 		neighbours = {}
 		for data in moments[1:]:
 			neighbours[str(data)] = euc_dist(data[1:],sample[1:])
 		sorted_neighbours = {k: v for k, v in sorted(neighbours.items(), key=lambda item: item[1])}
-		print(list(sorted_neighbours.keys())[0],list(sorted_neighbours.values())[0])
+		print("Nearest neighbour distance",list(sorted_neighbours.values())[0])
 		print("Actual person: ",sample[0])
 		temp = list(sorted_neighbours.keys())[0]
 		temp = temp.replace("[","")
@@ -114,9 +110,6 @@ def predict():
 		iterations_timeline.append(total_preds)
 		accuracy_timeline.append(correct_preds/total_preds)
 
-		# cv2.imwrite(dirname_name+"/frame%d.jpg" % count, th3)     # save frame as JPEG file
-		# if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-		# 	break
 		count += 1
 	print("\nAccuracy: ",correct_preds/total_preds)
 

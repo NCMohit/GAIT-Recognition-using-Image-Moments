@@ -19,16 +19,14 @@ for person in range(5,16):
 			current_dir3 = current_dir2 + "\\" + angle
 			for img in range(1,2):
 				current_dir4 = current_dir3 + "\\" + str(person).zfill(3) + "-" + pos + "-" + angle + "-" + str(img).zfill(3) +".png"
-				
-				try:				
-					current_img = cv2.imread(current_dir4,cv2.IMREAD_GRAYSCALE)
-					row = str(person)
-					for p in range(0,moment_range+1):
-						for q in range(0,moment_range+1):
-							# print("M "+str(p)+","+str(q)+" value is: "+str(Moment_pq(p,q,current_img)))
-							row += "," + str(Moment_pq(p,q,current_img))
-				except:
-					continue 
+								
+				current_img = cv2.imread(current_dir4,cv2.IMREAD_GRAYSCALE)
+				row = str(person)
+				for p in range(0,moment_range+1):
+					for q in range(0,moment_range+1):
+						# print("M "+str(p)+","+str(q)+" value is: "+str(Moment_pq(p,q,current_img)))
+						row += "," + str(Moment_pq(p,q,current_img))
+ 
 				model = open("test_data.csv","a")
 				model.write(row+"\n")
 				print(row)

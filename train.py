@@ -13,7 +13,7 @@ def Moment_pq(p,q,img):
 			moment += int(((row+1)**p)*((col+1)**q)*img[row,col])
 	return moment
 
-moment_range = 0	
+moment_range = 2	
 
 for person in range(1,16):
 	current_dir = dataset +"\\"+ str(person).zfill(3)
@@ -23,17 +23,15 @@ for person in range(1,16):
 			current_dir3 = current_dir2 + "\\" + angle
 			for img in range(1,11):
 				current_dir4 = current_dir3 + "\\" + str(person).zfill(3) + "-" + pos + "-" + angle + "-" + str(img).zfill(3) +".png"
-				
-				try:				
-					current_img = cv2.imread(current_dir4,cv2.IMREAD_GRAYSCALE)
-					row = str(person)
-					for p in range(0,moment_range+1):
-						for q in range(0,moment_range+1):
-							# print("M "+str(p)+","+str(q)+" value is: "+str(Moment_pq(p,q,current_img)))
-							row += "," + str(Moment_pq(p,q,current_img))
-				except:
-					continue 
-				model = open("moments_data_0.csv","a")
+								
+				current_img = cv2.imread(current_dir4,cv2.IMREAD_GRAYSCALE)
+				row = str(person)
+				for p in range(0,moment_range+1):
+					for q in range(0,moment_range+1):
+						# print("M "+str(p)+","+str(q)+" value is: "+str(Moment_pq(p,q,current_img)))
+						row += "," + str(Moment_pq(p,q,current_img))
+ 
+				model = open("moments_data.csv","a")
 				model.write(row+"\n")
 				print(row)
 				model.close()
